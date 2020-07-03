@@ -8,7 +8,7 @@ router.get('/', postController.postsGET)
 
 router.get('/:id', postController.singlePostGET)
 
-router.post('/new', passport.authenticate('jwt', {session: false}), postController.createPostPOST)
+router.post('/new', passport.authenticate('jwt', {session: false}, ), postController.createPostPOST)
 
 
 

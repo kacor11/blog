@@ -35,7 +35,6 @@ exports.userCreatePOST = [
 
 exports.userLoginPOST = (req, res) => {
   User.findOne( {username: req.body.username}, (err, user) => {
-    console.log(user)
     if(err) {
       return res.status(401).json( {error: 'Wrong username or password'} )
     }
@@ -51,7 +50,7 @@ exports.userLoginPOST = (req, res) => {
           iat: Date.now()
         }
         const secret = process.env.TOKEN_SECRET;
-        const token = jwt.sign(payload, secret , { expiresIn: '2d' } )
+        const token = jwt.sign(payload, secret , {expiresIn: '1d'})
         return res.status(200).json( {token: token} )
       } else {
         return res.status(401).json( {error: 'Wrong username or password'} );

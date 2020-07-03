@@ -7,6 +7,9 @@ opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = process.env.TOKEN_SECRET;
 
 module.exports = new JwtStrategy(opts, function(jwt_payload, done) {
+  if (Date.now() >= jwt_payload.exp) {
+    return done(null, false);
+  }
   User.findById(jwt_payload.sub, (err, user) => {
     if(err) {
       return done(err, false);

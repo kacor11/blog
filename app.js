@@ -14,6 +14,7 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const app = express();
+passport.use(jwtStrategy);
 app.use(cors());
 app.options('*', cors())
 app.use(express.json());
@@ -22,7 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use('/posts', blogRoutes)
 app.use('/users', userRoutes)
 
-passport.use(jwtStrategy);
+
 
 
 app.listen(5985, () => console.log('Server running on port 3000'))

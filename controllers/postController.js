@@ -21,6 +21,7 @@ exports.createPostPOST = [
   validator.body('title', 'Your post need to have title').trim().isLength({min: 1}),
   validator.body('text', 'Your post must contain something').trim().isLength({min: 1}),
   (req, res) => {
+    console.log(req.user, 'hey')
     const errors = validator.validationResult(req);
     if(!errors.isEmpty()) {
       res.status(400).json({errors: errors.array().map(error => error.msg)})
@@ -30,12 +31,11 @@ exports.createPostPOST = [
       title: req.body.title,
       text: req.body.text
     })
-    post.save((err) => {
+    post.save((err, post) => {
       if(err) { 
-        res.sendStatus(503) 
-        return
+        return res.sendStatus(503)         
       }
-      return res.sendStatus(201)
+      return res.status(201).json( {id: post._id} )
     }) 
   }]
 
