@@ -10,6 +10,7 @@ router.get('/:id', postController.singlePostGET)
 
 router.post('/new', passport.authenticate('jwt', {session: false}, ), postController.createPostPOST)
 
+router.post('/:id/comment/', postController.createCommentPOST);
 
 
 module.exports = router;

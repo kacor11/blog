@@ -6,7 +6,7 @@ const passport = require("passport");
 router.post('/new', userControler.userCreatePOST)
 
 router.post('/login', function(req, res, next) {
-  console.log(req.body)
+  console.log(req)
   next()
 }, userControler.userLoginPOST)
 module.exports = router;
