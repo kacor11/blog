@@ -58,11 +58,11 @@ exports.createCommentPOST = [
 
       comment.save((err) => {
         if(err) {
-          res.sendStatus(503)
+          return res.sendStatus(503)
         }
         Post.findByIdAndUpdate(req.params.id, { "$push": {"comments": comment._id} },(err) => {
           if(err) {
-            res.sendStatus(503)
+            return res.sendStatus(503)
           }
           return res.sendStatus(200)
         })
