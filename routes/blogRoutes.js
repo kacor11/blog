@@ -12,5 +12,9 @@ router.post('/new', passport.authenticate('jwt', {session: false}, ), postContro
 
 router.post('/:id/comment/', postController.createCommentPOST);
 
+router.delete('/:id/delete', passport.authenticate('jwt', {session: false}), postController.deletePostDELETE)
+
 
 module.exports = router;
+
+

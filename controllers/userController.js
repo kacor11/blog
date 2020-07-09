@@ -6,7 +6,15 @@ const bcrypt = require('bcrypt');
 
 exports.userCreatePOST = [
   validator.body('username', 'Please enter username').trim().isLength({min: 1}),
-  validator.body('password', 'Please enter password').trim().isLength({min: 1}),
+  validator.body('password', 'Please enter password').trim().isLength({min: 1})
+    .custom((value, {req, loc, path}) => {
+      if(value !== req.body.confirmPassword) {
+        throw new Error('Passwords dont match');
+      } else {
+        return value
+      }
+    }),
+  
   (req, res) => {
     const errors = validator.validationResult(req);
     if(!errors.isEmpty()) {
@@ -47,11 +55,12 @@ exports.userLoginPOST = (req, res) => {
       if(result) {
         const payload = {
           sub: user._id,
-          iat: Date.now()
+          iat: Date.now(),
+          admin: user.isAdmin
         }
         const secret = process.env.TOKEN_SECRET;
         const token = jwt.sign(payload, secret , {expiresIn: '1d'})
-        return res.status(200).json( {token: token} )
+        return res.status(200).json( {token: token, isAdmin: user.isAdmin} )
       } else {
         return res.status(401).json( {error: 'Wrong username or password'} );
       }
