@@ -2,9 +2,10 @@ const express = require('express');
 const router = express.Router();
 const postController = require('../controllers/postController');
 const passport = require('passport')
+const middleware = require('../middleware/cache')
 
 
-router.get('/', postController.postsGET)
+router.get('/', middleware.isCached, postController.postsGET)
 
 router.get('/:id', postController.singlePostGET)
 

@@ -1,14 +1,17 @@
 const Post = require('../models/Post');
 const validator = require('express-validator');
 const Comment = require('../models/Comment');
+const redis = require('redis');
+const client = redis.createClient({ port: 6379, host: '127.0.0.1' });
 
 
 
 exports.postsGET = (req, res) => {
-  Post.find({}, 'title text date')
+  Post.find({}, 'title text date author')
     .sort('-date')
     .exec((err, posts) => {
       if(err) { return res.status(404)}
+      client.set(req.path, JSON.stringify(posts));
       return res.json(posts);
     })
 }
@@ -23,25 +26,18 @@ exports.singlePostGET = (req, res) => {
 }
 
 exports.deletePostDELETE = (req, res) => {
-
   Post.findById(req.params.id, (err, post) => {
     if(err) {
-      console.log('witam blad')
       return res.sendStatus(404);
     } 
-    console.log(req.user.id)
-    console.log(post.author)
-    console.log(req.user.id === post.author)
     if(req.user.isAdmin || req.user.id == post.author) {
       post.remove((err) => {
         if(err) {
-          console.log('witam blad 1')
-          return res.json({error: 'hjuston mam problem'})
+          return res.sendStatus(401);
         }
-        console.log('witam sukces')
-        return res.json({error: 'awantura o kase'})
       })
-      // TUTAJ TRZEBA ERROR HANDLING ZROBIC ZIOMEK
+      client.DEL('/');
+      return res.sendStatus(200)
     }
   })
 }
@@ -64,6 +60,7 @@ exports.createPostPOST = [
       if(err) { 
         return res.sendStatus(503)         
       }
+      client.DEL('/');
       return res.status(201).json( {id: post._id} )
     }) 
   }]

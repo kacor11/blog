@@ -43,24 +43,26 @@ exports.userCreatePOST = [
 
 exports.userLoginPOST = (req, res) => {
   User.findOne( {username: req.body.username}, (err, user) => {
+    console.log(req.body)
     if(err) {
       return res.status(401).json( {error: 'Wrong username or password'} )
     }
     if(!user) {
-      console.log('were here')
+      console.log('user')
       return res.status(401).json( {error: 'Wrong username or password'} )
     }
     bcrypt.compare(req.body.password, user.password, (err, result) => {
+      console.log('password')
       if(err) { return res.status(401).json( {error: 'Wrong username or password'} ) }
       if(result) {
         const payload = {
-          sub: user._id,
+          sub: user.id,
           iat: Date.now(),
           admin: user.isAdmin
         }
         const secret = process.env.TOKEN_SECRET;
         const token = jwt.sign(payload, secret , {expiresIn: '1d'})
-        return res.status(200).json( {token: token, isAdmin: user.isAdmin} )
+        return res.status(200).json( {token: token} )
       } else {
         return res.status(401).json( {error: 'Wrong username or password'} );
       }

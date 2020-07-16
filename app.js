@@ -9,17 +9,22 @@ const cors = require('cors');
 
 
 
+
+
+
 mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0-wqruv.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`, 
   {useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false})
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 const app = express();
-passport.use(jwtStrategy);
+
+
 app.use(cors());
 app.options('*', cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+passport.use(jwtStrategy);
 
 app.use('/posts', blogRoutes)
 app.use('/users', userRoutes)
